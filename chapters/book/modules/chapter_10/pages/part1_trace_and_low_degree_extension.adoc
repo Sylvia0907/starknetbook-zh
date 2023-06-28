@@ -1,7 +1,7 @@
 _版权所有 © 2019 Starkware Industries Ltd。根据 Apache 许可证版本 2.0（“许可证”）许可。除非符合许可证的规定，否则您不得使用此文件。您可以在
 https://www.starkware.co/open-source-license/ 获取许可证的副本。除非适用法律要求或书面同意，否则根据许可证分发的软件是基于“按原样”分发的，没有任何形式的明示或暗示的保证或条件。请参阅许可证以了解许可权限和限制的具体语言。_
 
-== Part 1: 轨迹和低次扩展
+== 第一部分：轨迹和低次扩展
 
 * https://www.youtube.com/watch?v=Y0uJz9VL3Fo[视频讲解 (youtube)]
 * https://starkware.co/wp-content/uploads/2021/12/STARK101-Part1.pdf[幻灯片
