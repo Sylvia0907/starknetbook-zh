@@ -92,29 +92,23 @@ numer0 = f - 1
 denom0 = X - 1
 ----
 
-Convince yourself that latexmath:[$f(x) - 1$] vanishes at
-latexmath:[$x=1$] by making sure that evaluating this polynomial at
-latexmath:[$1$] yields latexmath:[$0$].
+确保 latexmath:[$f(x) - 1$] 在 latexmath:[$x=1$] 处为零，通过确保在 latexmath:[$1$] 处评估这个多项式额结果为 latexmath:[$0$]。
 
-The fact that latexmath:[$f(x) - 1$] has a root at latexmath:[$1$]
-implies that it is divisible by latexmath:[$(x - 1)$]. Run the following
-cell to convince yourself that the remainder of `numer0` modulo `denom0`
-is latexmath:[$0$], and therefore division indeed yields a polynomial:
+latexmath:[$f(x) - 1$] 在 latexmath:[$1$] 处有一个根，这意味着它可以被 latexmath:[$(x - 1)$] 整除。 运行以下代码，确保 `numer0` 模除以 `denom0` 的余数为 latexmath:[$0$]，因此除法确实产生了一个多项式：
 
 [source,python]
 ----
 numer0 % denom0
 ----
 
-Run the following cell to construct `p0`, the polynomial representing
-the first constraint, by dividing `numer0` by `denom0`:
+运行以下代码，通过将 `numer0` 除以 `denom0` 来构造表示第一个约束条件的多项式 `p0`：
 
 [source,python]
 ----
 p0 = numer0 / denom0
 ----
 
-Run test:
+运行测试：
 
 [source,python]
 ----
@@ -122,12 +116,11 @@ assert p0(2718) == 2509888982
 print('Success!')
 ----
 
-== The Second Constraint
+== 第二个约束条件
 
-Construct the polynomial `p1` representing the second constraint,
-latexmath:[$p_1(x)= \frac{f(x) - 2338775057}{x - g^{1022}}$], similarly.
+类似地，构造表示第二个约束条件的多项式 `p1` ，其定义为：latexmath:[$p_1(x)= \frac{f(x) - 2338775057}{x - g^{1022}}$]。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -136,7 +129,7 @@ denom1 = X - g**1022
 p1 = numer1 / denom1
 ----
 
-Run test:
+运行测试：
 
 [source,python]
 ----
@@ -144,34 +137,32 @@ assert p1(5772) == 232961446
 print('Success!')
 ----
 
-== The Third Constraint - Succinctness
+== 第三个约束条件 - 简洁性
 
-The last constraint's rational function is slightly more complicated:
+最后一个约束的有理函数稍微复杂一些：
 
 [latexmath]
 ++++
 \[p_2(x) = \frac{f(g^2 \cdot x) - (f(g \cdot x))^2 - (f(x))^2}{\prod\limits_{i=0}^{1020} (x-g^i)}\]
 ++++
 
-whose denominator can be rewritten, so that the entire expression is
-easier to compute:
+其分母可以改写，因此整个表达式更容易计算：
 
 [latexmath]
 ++++
 \[\frac{f(g^2 \cdot x) - (f(g \cdot x))^2 - (f(x))^2}{\frac{x^{1024} - 1}{(x-g^{1021})(x-g^{1022})(x-g^{1023})}}\]
 ++++
 
-This follows from the equality
+这是由平等关系得出的
 
 [latexmath]
 ++++
 \[\prod\limits_{i=0}^{1023} (x-g^i) = x^{1024} - 1\]
 ++++
 
-Convince yourself of this equality using the function `prod` that takes
-a list and computes its product.
+您可以使用函数 `prod` 来验证这个等式。 `prod` 函数接受一个列表作为输入，并计算其乘积。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -179,18 +170,14 @@ lst = [(X - g**i) for i in range(1024)]
 prod(lst)
 ----
 
-For more information, see our blog post titled
-https://medium.com/starkware/arithmetization-ii-403c3b3f4355[Arithmetization
-II].
+更多详情，请查看我们的题为 https://medium.com/starkware/arithmetization-ii-403c3b3f4355[Arithmetization
+II] 的博客文章。
 
-Let's pause for a moment, and look at a simple example on how
-polynomials are composed. After that we will generate the third
-constraint.
+让我们停顿一下，看一个简单的例子，说明多项式是如何组成的。之后，我们将生成第三个约束。
 
-== Composing Polynomials (a detour)
+== 多项式合成（小插曲）
 
-Create the two polynomials latexmath:[$q(x) = 2x^2 +1$],
-latexmath:[$r(x) = x - 3$]:
+创建两个多项式 latexmath:[$q(x) = 2x^2 +1$]、latexmath:[$r(x) = x - 3$]：
 
 [source,python]
 ----
@@ -198,10 +185,7 @@ q = 2*X ** 2 + 1
 r = X - 3
 ----
 
-Composing latexmath:[$q$] on latexmath:[$r$] yields a new polynomial:
-latexmath:[$q(r(x)) = 2(x-3)^2 + 1 = 2x^2-12x+19$] Run the following
-cell to create a third polynomial `cmp` by composing `q` on `r` and
-convince yourself that `cmp` is indeed the composition of `q` and `r`:
+将多项式 latexmath:[$q$] 合成到多项式 latexmath:[$r$] 上，可以得到一个新的多项式：latexmath:[$q(r(x)) = 2(x-3)^2 + 1 = 2x^2-12x+19$] 运行以下代码，通过 `q` 合成到 `r` 上得到第三个多项式 `cmp` ，并验证 `cmp` 确实是 `q` 和 `r` 的合成。
 
 [source,python]
 ----
@@ -209,14 +193,11 @@ cmp = q(r)
 cmp
 ----
 
-== Back to Polynomial Constraints
+== 回到多项式约束条件
 
-Construct the third constraint `p2` in a similar manner to the
-construction of `p0` and `p1`, using polynomial composition. Along the
-way, verify that latexmath:[$g^{1020}$] is a root of the *numerator*
-while latexmath:[$g^{1021}$] is not.
+类似于构造 `p0` 和 `p1` 的方式，使用多项式合成构造第三个约束条件 `p2`。在此过程中，验证 latexmath:[$g^{1020}$] 是 *分子* 的根，而 latexmath:[$g^{1021}$] 不是。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -228,7 +209,7 @@ denom2 = (X**1024 - 1) / ((X - g**1021) * (X - g**1022) * (X - g**1023))
 p2 = numer2 / denom2
 ----
 
-Run test:
+运行测试：
 
 [source,python]
 ----
@@ -237,9 +218,7 @@ assert p2(31415) == 2090051528
 print('Success!')
 ----
 
-Run the following cell to observe the degrees of the constraint
-polynomials `p0`, `p1` and `p2`, all less than latexmath:[$1024$]. This
-will be important in the next part.
+运行以下代码以观察约束多项式 `p0`、 `p1` 和 `p2` 的次数，它们都小于 latexmath:[$1024$]。这在下一部分中非常重要。
 
 [source,python]
 ----
@@ -248,37 +227,27 @@ print('deg p1 =', p1.degree())
 print('deg p2 =', p2.degree())
 ----
 
-== Step 4 - Composition Polynomial
+== 第四步 - 合成多项式
 
-Recall that we're translating a problem of checking the validity of
-three polynomial constraints to checking that each of the rational
-functions latexmath:[$p_0, p_1, p_2$] are polynomials.
+回顾一下， 我们正在将一个检查三个多项式约束条件的有效性的问题转化为检查每个有理函数 latexmath:[$p_0, p_1, p_2$] 是否为多项式的问题。
 
-Our protocol uses an algorithm called
-https://eccc.weizmann.ac.il/report/2017/134/[FRI] to do so, which will
-be discussed in the next part. In order for the proof to be succinct
-(short), we prefer to work with just one rational function instead of
-three. For that, we take a random linear combination of
-latexmath:[$p_0, p_1, p_2$] called the *composition polynomial* (CP for
-short):
+我们的协议使用一种成为
+https://eccc.weizmann.ac.il/report/2017/134/[FRI] 的算法来实现这一点， 这将在下一部分中讨论。为了使证明简洁
+（简短的），我们更喜欢使用一个有理函数而不是三个。为此，我们从 latexmath:[$p_0, p_1, p_2$] 中随机选择一个线性组合，称为 *合成多项式* （简称为 CP）。
 
 [latexmath]
 ++++
 \[CP(x) = \alpha_0 \cdot p_0(x) + \alpha_1 \cdot p_1(x) + \alpha_2 \cdot  p_2(x)\]
 ++++
 
-where $\alpha_0, \alpha_1, \alpha_2 $ are random field elements obtained
-from the verifier, or in our case - from the channel.
+其中 $\alpha_0, \alpha_1, \alpha_2 $ 是从验证者哪里获得的随机域元素，或者在我们的例子中，是从通信那里获得。
 
-Proving that (the rational function) latexmath:[$CP$] is a polynomial
-guarantess, with high probability, that each of latexmath:[$p_0$],
-latexmath:[$p_1$], latexmath:[$p_2$] are themselves polynomials.
+证明（有理函数） latexmath:[$CP$] 是一个多项式可以高概率确保 latexmath:[$p_0$]、
+latexmath:[$p_1$]、latexmath:[$p_2$] 它们自身也是多项式。
 
-In the next part, you will generate a proof for an equivalent fact. But
-first, let's create `CP` using `Channel.receive_random_field_element` to
-obtain latexmath:[$\alpha_i$].
+在下一部分中，你将为一个等价的事实生成证明。但首先，让我们使用 `Channel.receive_random_field_element` 创建 `CP` 以获取 latexmath:[$\alpha_i$]。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -289,7 +258,7 @@ def get_CP(channel):
     return alpha0*p0 + alpha1*p1 + alpha2*p2
 ----
 
-Run test:
+运行测试：
 
 [source,python]
 ----
@@ -300,14 +269,11 @@ assert CP_test(2439804) == 838767343, f'cp(2439804) = {CP_test(2439804)}, when i
 print('Success!')
 ----
 
-== Commit on the Composition Polynomial
+== 关于合成多项式的承诺
 
-Lastly, we evaluate latexmath:[$cp$] over the evaluation domain
-(`eval_domain`), build a Merkle tree on top of that and send its root
-over the channel. This is similar to commiting on the LDE trace, as we
-did at the end of part 1.
+最后，我们在评估域 (`eval_domain`) 上评估 latexmath:[$cp$]，在此基础上建立一个 Merkle tree，并把根发送到通信上。类似于在 LDE 轨迹上的承诺，就像我们在第一部分结束时做的那样。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -316,10 +282,9 @@ def CP_eval(channel):
     return [CP(d) for d in eval_domain]
 ----
 
-Construct a Merkle Tree over the evaluation and send its root over the
-channel.
+在评估上构建一个 Merkle Tree，并把根发送到通信上。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -328,7 +293,7 @@ CP_merkle = MerkleTree(CP_eval(channel))
 channel.send(CP_merkle.root)
 ----
 
-Test your code:
+测试你的代码：
 
 [source,python]
 ----
