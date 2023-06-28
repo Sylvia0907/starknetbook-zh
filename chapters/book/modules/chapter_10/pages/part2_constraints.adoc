@@ -77,16 +77,14 @@ print('Success!')
 
 对于相应的 latexmath:[$u(x)$] 和 latexmath:[$\{x_i\}_{i=0}^k$]，在这一步中，我们将构造这三个有理函数，并证明它们确实是多项式。
 
-== The First Constraint:
+== 第一个约束条件：
 
-In the first constraint, latexmath:[$f(x) - 1$] and
-latexmath:[$\{x_i\} = \{1\}$].
+在第一个约束条件中，latexmath:[$f(x) - 1$] 和 latexmath:[$\{x_i\} = \{1\}$]。
 
-We will now construct the *polynomial*
-latexmath:[$p_0(x)=\frac{f(x) - 1}{x - 1}$], making sure that
-latexmath:[$f(x) - 1$] is indeed divisible by latexmath:[$(x-1)$].
+我们现在将构造 *多项式* latexmath:[$p_0(x)=\frac{f(x) - 1}{x - 1}$]，确保
+latexmath:[$f(x) - 1$] 确实可以被 latexmath:[$(x-1)$] 整除。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
