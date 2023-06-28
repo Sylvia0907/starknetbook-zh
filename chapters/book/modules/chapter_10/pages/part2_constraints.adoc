@@ -29,21 +29,12 @@ latexmath:[$G=\{g^i : 0\leq i\leq 1023\}$] 是由 latexmath:[$g$] 生成的“�
 我们现在将上述三个约束条件重写为关于 `f` 的多项式约束条件的形式：
 
 . latexmath:[$a[0] = 1$] 被转化为多项式 latexmath:[$f(x) - 1$], 在 latexmath:[$x = g^0$] 处评估为 0 （请注意，latexmath:[$g^0$] 等于 latexmath:[$1$]）。
-. latexmath:[$a[1022] = 2338775057$] is translated to the polynomial
-latexmath:[$f(x) - 2338775057$], which evalutes to 0 for
-latexmath:[$x = g^{1022}$].
-. latexmath:[$a[i+2]=a[i+1]^2+a[i]^2$] for every latexmath:[$i<1021$] is
-translated to the polynomial
-latexmath:[$f(g^2 \cdot x) - (f(g \cdot x))^2 - (f(x))^2$], which
-evaluates to 0 for
-latexmath:[$x \in G \backslash \{g^{1021}, g^{1022}, g^{1023}\}$].
+. latexmath:[$a[1022] = 2338775057$] 被转化为多项式 latexmath:[$f(x) - 2338775057$]，在 latexmath:[$x = g^{1022}$] 处评估为 0。
+. 对于每个 latexmath:[$i<1021$]，latexmath:[$a[i+2]=a[i+1]^2+a[i]^2$] 被转化为多项式 latexmath:[$f(g^2 \cdot x) - (f(g \cdot x))^2 - (f(x))^2$]，在 latexmath:[$x \in G \backslash \{g^{1021}, g^{1022}, g^{1023}\}$] 处评估为 0。
 
-== Hands on
+== 实践操作
 
-First, since this is a separate notebook from Part 1, let's run the
-following piece of code to have all the variables here with their
-correct values. Note that it may take up to 30 seconds, since it reruns
-the polynomial interpolation.
+首先，由于这是与第一部分不同的独立笔记本，让我们运行以下代码片段，以便将所有变量及其正确的值带到此处。请注意，这可能需要多达30秒的时间，因为它会重新运行多项式插值。
 
 [source,python]
 ----
@@ -57,44 +48,34 @@ a, g, G, h, H, eval_domain, f, f_eval, f_merkle, channel = part1()
 print('Success!')
 ----
 
-You will obtain each of the three constraints as a quotient of two
-polynomials, making sure the remainder is the zero polynomial.
+你将得到三个约束中的每一个，作为两个多项式的商，确保余数是零项式。
 
-== Step 3 - Rational Functions (That are in Fact Polynomials)
+== 第三步 - 有理函数（实际上是多项式）
 
-Each of the constraints above is represented by a polynomial
-latexmath:[$u(x)$] that supposedly evaluates to latexmath:[$0$] on
-certain elements of the group latexmath:[$G$]. That is, for some
-latexmath:[$x_0, \ldots, x_k \in G$], we claim that
+上述每个约束条件都由一个多项式 latexmath:[$u(x)$] 表示，该多项式在群 latexmath:[$G$] 的某些元素上评估为 latexmath:[$0$]。 也就是说，对于一些 latexmath:[$x_0, \ldots, x_k \in G$]，我们声称：
 
 [latexmath]
 ++++
 \[u(x_0) = \ldots = u(x_k) = 0\]
 ++++
 
-(note that for the first two constraints, latexmath:[$k=0$] because they
-only refer to one point and for the third latexmath:[$k=1021$]).
+（请注意，对于前两个约束条件，latexmath:[$k=0$] ，因为它们只涉及一个点，对于第三个约束条件，latexmath:[$k=1021$])。
 
-This is equivalent to saying that latexmath:[$u(x)$] is divisible, as a
-polynomial, by all of latexmath:[$\{(x-x_i)\}_{i=0}^k$], or,
-equivalently, by
+这等于说，多项式 latexmath:[$u(x)$] 可以被所有 latexmath:[$\{(x-x_i)\}_{i=0}^k$] 作为多项式整除，或者相当于被
 
 [latexmath]
 ++++
 \[\prod_{i=0}^k (x-x_i)\]
 ++++
 
-Therefore, each of the three constraints above can be written as a
-rational function of the form:
+因此，上述三个约束条件中的每一个都可以写成一个有理函数的形式：
 
 [latexmath]
 ++++
 \[\frac{u(x)}{\prod_{i=0}^k (x-x_i)}\]
 ++++
 
-for the corresponding latexmath:[$u(x)$] and
-latexmath:[$\{x_i\}_{i=0}^k$]. In this step we will construct these
-three rational functions and show that they are indeed polynomials.
+对于相应的 latexmath:[$u(x)$] 和 latexmath:[$\{x_i\}_{i=0}^k$]，在这一步中，我们将构造这三个有理函数，并证明它们确实是多项式。
 
 == The First Constraint:
 
