@@ -88,46 +88,36 @@ assert '5446c90d6ed23ea961513d4ae38fc6585f6614a3d392cb087e837754bfd32797' == sha
 print('Success!')
 ----
 
-== FRI Folding Operator
+== FRI 折叠运算符
 
-The first FRI polynomial is simply the composition polynomial, i.e.,
-`cp`. Each subsequent FRI polynomial is obtained by:
+第一个 FRI 多项式就是组合多项式，即 `cp`。 每个后续的 FRI 多项式都是通过以下方式获得的：
 
-. Getting a random field element latexmath:[$\beta$] (by calling
-`Channel.receive_random_field_element`).
-. Multiplying the odd coefficients of the previous polynomial by
-latexmath:[$\beta$].
-. Summing together consecutive pairs (even-odd) of coefficients.
+. 获取一个随机的域元素 latexmath:[$\beta$] (通过调用 `Channel.receive_random_field_element`)。
+. 将前一个多项式的奇数系数乘以 latexmath:[$\beta$]。
+. 将连续的系数对（偶-奇）相加。
 
-Formally, let's say that the k-th polynomial is of degree
-latexmath:[$< m$] (for some latexmath:[$m$] which is a power of 2):
+正式地说，假设第 k 个多项式的系数为 latexmath:[$< m$] (其中 latexmath:[$m$] 是 2 的次方)：
 
 [latexmath]
 ++++
 \[p_{k}(x) := \sum _{i=0} ^{m-1} c_i x^i\]
 ++++
 
-Then the (k+1)-th polynomial, whose degree is $< \frac m 2 $ will be:
+那么，次数为  $< \frac m 2 $ 的第 (k+1) 个多项式将是：
 
 [latexmath]
 ++++
 \[p_{k+1}(x) := \sum _{i=0} ^{  m / 2 - 1 } (c_{2i} + \beta \cdot c_{2i + 1}) x^i\]
 ++++
 
-Write a function `next_fri_polynomial` that takes as arguments a
-polynomial and a field element (the one we referred to as
-latexmath:[$\beta$]), and returns the "folded" next polynomial.
+编写一个名为 `next_fri_polynomial` 的函数，改函数的多项式和一个域元素（我们称之为 latexmath:[$\beta$]）作为参数，并返回“折叠”后的下一个多项式。
 
-Note that:
+请注意；
 
-. `Polynomial.poly` contains a list of a polynomial's coefficients, the
-free term first, and the highest degree last, so `p.poly[i] == u` if the
-coefficient of latexmath:[$x^i$] is latexmath:[$u$].*
-. `Polynomial`'s default constructor takes the list of coefficients as
-argument. So a polynomial can be instantiated from a list of
-coefficients `l` by calling `Polynomial(l)`.
+. `Polynomial.poly` 包含多项式字数的列表，自由项在前，最高次项在后，因此如果 latexmath:[$x^i$]` 的系数为 latexmath:[$x^i$]，则 p.poly[i] == u` 。
+. `Polynomial`的默认构造函数将系数列表作为参数。因此，可以通过调用 `Polynomial(l)` 从系数列表 `l` 实现多项式。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -139,7 +129,7 @@ def next_fri_polynomial(poly,  beta):
     return odd + even
 ----
 
-Run test:
+运行测试：
 
 [source,python]
 ----
@@ -148,14 +138,11 @@ assert '6bff4c35e1aa9693f9ceb1599b6a484d7636612be65990e726e52a32452c2154' == sha
 print('Success!')
 ----
 
-== Putting it Together to Get the Next FRI Layer
+== 把它放在一起，以获得下一个 FRI 层
 
-Write a function `next_fri_layer` that takes a polynomial, a domain, and
-a field element (again - latexmath:[$\beta$]), and returns the next
-polynomial, the next domain, and the evaluation of this next polynomial
-on this next domain.
+编写一个名为 `next_fri_layer` 的函数，该函数接受一个一个多项式、一个域和一个域元素（再次是 latexmath:[$\beta$]），并返回下一个多项式、下一个域以及在这个下一个域上对这个下一个多项式的求值。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -166,7 +153,7 @@ def next_fri_layer(poly, domain, beta):
     return next_poly, next_domain, next_layer
 ----
 
-Run test:
+运行测试：
 
 [source,python]
 ----
@@ -180,39 +167,28 @@ assert next_l == [FieldElement(86)]
 print('Success!')
 ----
 
-== Generating FRI Commitments
+== 生成 FRI 承诺
 
-We have now developed the tools to write the `FriCommit` method, that
-contains the main FRI commitment loop.
+我们现在已经开发了编写 `FriCommit` 方法所需的工具，其中包含主要的 FRI 承诺循环。
 
-It takes the following 5 arguments:
+它接受以下5个参数：
 
-. The composition polynomial, that is also the first FRI polynomial,
-that is - `cp`.
-. The coset of order 8192 that is also the first FRI domain, that is -
-`eval_domain`.
-. The evaluation of the former over the latter, which is also the first
-FRI layer, that is - `cp_eval`.
-. The first Merkle tree (we will have one for each FRI layer)
-constructed from these evaluations, that is - `cp_merkle`.
-. A channel object, that is `channel`.
+. 组合多项式，也是第一个 FRI 多项式，即 `cp`。
+. 阶为 8192 的余元集，也是第一个 FRI 域，即 `eval_domain`。
+. 前者在后者上的求值，也是第一个 FRI 层，即 `cp_eval`。
+. 从这些评估构建的第一个 Merkle Tree（我们将使每个 FRI 层拥有一个），即 `cp_merkle`。
+. 一个通道对象，即 `channel`。
 
-The method accordingly returns 4 lists:
+该方法相应地返回 4 个列表：
 
-. The FRI polynomials.
-. The FRI domains.
-. The FRI layers.
-. The FRI Merkle trees.
+. FRI 多项式。
+. FRI 域。
+. FRI 层。
+. FRI Merkle trees。
 
-The method contains a loop, in each iteration of which we extend these
-four lists, using the last element in each. The iteration should stop
-once the last FRI polynomial is of degree 0, that is - when the last FRI
-polynomial is just a constant. It should then send over the channel this
-constant (i.e. - the polynomial's free term). The `Channel` class only
-supports sending strings, so make sure you convert anything you wish to
-send over the channel to a string before sending.
+该方法包含一个循环，在每次迭代中，我们使用每个列表中的最后一个元素扩展这四个列表。当最后一个 FRI 多项式的次数为 0 时，也就是当最后一个 FRI 多项式只是一个常数时，迭代应该停止。然后，它应该通过通道发送这个常数（即多项式的自由项）。`Channel` 类仅支持发送字符串，因此在发送之前，请确保将要发送的任何内容转换为字符串。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -233,7 +209,7 @@ def FriCommit(cp, domain, cp_eval, cp_merkle, channel):
     return fri_polys, fri_domains, fri_layers, fri_merkles
 ----
 
-Run test:
+运行测试：
 
 [source,python]
 ----
@@ -248,8 +224,7 @@ assert test_channel.state == '61452c72d8f4279b86fa49e9fb0fdef0246b396a4230a2bfb2
 print('Success!')
 ----
 
-Run the following cell to execute the function with your channel object
-and print the proof so far:
+运行以下单元格，使用您的通道对象执行该函数，并打印到目前为止的证明：
 
 [source,python]
 ----
