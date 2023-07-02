@@ -3,14 +3,13 @@ https://www.starkware.co/open-source-license/ 获取许可证的副本。除非�
 
 == Part 3: FRI 承诺
 
-* https://www.youtube.com/watch?v=gd1NbKUOJwA[Video Lecture (youtube)]
-* https://starkware.co/wp-content/uploads/2021/12/STARK101-Part3.pdf[Slides
+* https://www.youtube.com/watch?v=Y0uJz9VL3Fo[视频讲解 (youtube)]
+* https://starkware.co/wp-content/uploads/2021/12/STARK101-Part1.pdf[幻灯片
 (PDF)]
 
-== Load Previous Session
+== 加载上一个会话
 
-Run the next cell to load the relevant variables. As usual - it will
-take a while to run.
+运行下一个单元格以加载相关变量。像往常一样 - 运行需要一段时间。
 
 [source,python]
 ----
@@ -24,42 +23,33 @@ cp, cp_eval, cp_merkle, channel, eval_domain = part2()
 print("Success")
 ----
 
-== FRI Folding
+== FRI 折叠
 
-Our goal in this part is to construct the FRI layers and commit on them.
-To obtain each layer we need:
+本部分的目标是构建FRI层并对其进行承诺。为了获得每一层，我们需要：
 
-. To generate a domain for the layer (from the previous layer's domain).
-. To generate a polynomial for the layer (from the previous layer's
-polynomial and domain).
-. To evaluate said polynomial on said domain - *this is the next FRI
-layer*.
+. 生成该层的域 (来自上一层域)。
+. 生成该层的多项式 (来自上一层的多项式和域)。
+. 在这个域上评估多项式 - *这就是下一层 FRI 层*.
 
-== Domain Generation
+== 域的生成
 
-The first FRI domain is simply the `eval_domain` that you already
-generated in Part 1, namely a coset of a group of order 8192. Each
-subsequent FRI domain is obtained by taking the first half of the
-previous FRI domain (dropping the second half), and squaring each of its
-elements.
+第一个 FRI 域就是第一部分生成的 `eval_domain`，即 8192 阶群的余类。每个后续的 FRI 域通过取前一个 FRI 域的前一半（舍弃后一半）并平方它的每个元素得到的。
 
-Formally - we got `eval_domain` by taking:
+正式地说 - 我们通过以下方式获得 `eval_domain`：
 
 [latexmath]
 ++++
 \[w, w\cdot h, w\cdot h^2, ..., w\cdot h^{8191}\]
 ++++
 
-The next layer will therefore be:
+因此，下一层将是：
 
 [latexmath]
 ++++
 \[w^2, (w\cdot h)^2, (w\cdot h^2)^2, ..., (w\cdot h^{4095})^2\]
 ++++
 
-Note that taking the squares of the second half of each elements in
-`eval_domain` yields exactly the same result as taking the squares of
-the first half. This is true for the next layers as well. For example:
+请注意， 对 `eval_domain` 中的每个元素的后一半进行平方，得到的结果与对前一半进行平方完全相同。这对于下一层也是成立的。例如：
 
 [source,python]
 ----
@@ -68,19 +58,18 @@ half_domain_size = len(eval_domain) // 2
 print(eval_domain[half_domain_size + 100] ** 2)
 ----
 
-Similarly, the domain of the third layer will be:
+同样地，第三层的领域将是：
 
 [latexmath]
 ++++
 \[w^4, (w\cdot h)^4, (w\cdot h^2)^4, ..., (w\cdot h^{2047})^4\]
 ++++
 
-And so on.
+以此类推。
 
-Write a function `next_fri_domain` that takes the previous domain as an
-argument, and outputs the next one.
+编写一个名为 `next_fri_domain` 的函数，该函数将先前的域作为参数，并输出下一个域。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -88,7 +77,7 @@ def next_fri_domain(fri_domain):
     return [x ** 2 for x in fri_domain[:len(fri_domain) // 2]]
 ----
 
-Run test:
+运行测试：
 
 [source,python]
 ----
