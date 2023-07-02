@@ -9,8 +9,7 @@ https://www.starkware.co/open-source-license/ 获取许可证的副本。除非�
 
 == 加载上一个会话
 
-Run the next cell to load the variables we'll use in this part. Since it
-repeats everything done in previous parts - it will take a while to run.
+运行下一个单元格以加载相关变量。像往常一样 - 运行需要一段时间。
 
 [source,python]
 ----
@@ -23,49 +22,27 @@ fri_polys, fri_domains, fri_layers, fri_merkles, _ = part3()
 print('Success!')
 ----
 
-== Decommit on a Query
+== 在查询上取消承诺
 
-Our goal in this part is to generate all the information needed for
-verifying the commitments of the three previous parts. In this part we
-write two functions:
+在这一部分中，我们的目标是生成验证前三部分承诺所需的所有信息。在这一部分中，我们编写了两个函数：
 
-. `decommit_on_fri_layers` - sends over the channel data showing that
-each FRI layer is consistent with the others, when sampled at a
-specified index.
-. `decommit_on_query` - sends data required for decommiting on the trace
-and then calls `decommit_on_fri_layers`.
+. `decommit_on_fri_layers` - 通过通道发送数据，显示每个 FRI 层在指定索引处进行采样时与其他层一致。
+. `decommit_on_query` - 发送取消跟踪所需的数据，然后调用 `decommit_on_fri_layers`。
 
-== Decommit on the FRI Layers
+== 在 FRI 层取消承诺
 
-Implement `decommit_on_fri_layers` function. The function gets an index
-and a channel, and sends over the channel the relevant data for
-verifying the correctness of the FRI layers. More specifically, it
-iterates over `fri_layers` and `fri_merkles` and in each iteration it
-sends the following data (in the stated order):
+实现 `decommit_on_fri_layers` 函数。该函数获取一个索引和一个通道，并通过通道发送相关数据，以验证 FRI 层的正确性。更具体地说，它在 `fri_layers` 和 `fri_merkles` 上进行迭代，并在每次迭代中按照以下顺序发送以下数据： （按所述顺序排列）：
 
-. The element of the FRI layer at the given index (using `fri_layers`).
-. Its authentication path (using the corresponding Merkle tree from
-`fri_merkles`).
-. The element's FRI sibling (i.e., if the element is
-latexmath:[$cp_i(x)$], then its sibling is latexmath:[$cp_i(-x)$], where
-latexmath:[$cp_i$] is the current layer's polynomial, and
-latexmath:[$x$] is an element from the current layer's domain).
-. The authentication path of the element's sibling (using the same
-merkle tree).
+. 给定索引处的 FRI 层元素（使用 `fri_layers`）。
+. 其认证路径（使用来自 `fri_merkles` 的相应的 Merkle Tree）。
+. 元素的 FRI 兄弟（即，如果元素是 latexmath:[$cp_i(x)$]，则其兄弟是latexmath:[$cp_i(-x)$]，其中 latexmath:[$cp_i$] 是当前层的多项式，而 latexmath:[$x$] 是当前层域中的一个元素）。
+. 元素兄弟的认证路径（使用相同的 Merkle Tree）。
 
-To get an authentication path of an element, use
-`get_authentication_path()` of the `MerkleTree` class, with the
-corresponding index each time. Note that the index of the element's
-sibling equals to (idx + latexmath:[$\frac k 2$]) mod latexmath:[$k$],
-where latexmath:[$k$] is the length of the relevant FRI layer. Note that
-we do *not* send the authentication path for the element in the last
-layer. In the last layer, all the elements are equal, regardless of the
-query, as they are evaluations of a constant polynomial.
+要获取元素的认证路径，请每次使用 `MerkleTree` 类的 `get_authentication_path()` 方法，并使用相应的索引。请注意，元素兄弟的索引等于 (idx + latexmath:[$\frac k 2$]) mod latexmath:[$k$]，其中 latexmath:[$k$] 是相关 FRI 层的长度。请注意，我们 *不* 发送元素的认证路径。在最后一层中，所有元素都相等，与查询无关，因为它们是常数多项式的评估。
 
-_(Remember to convert non-string variables into string before sending
-over the channel.)_
+_(记得在发送通道之前将非字符串变量转换为字符串。)_
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -81,7 +58,7 @@ def decommit_on_fri_layers(idx, channel):
     channel.send(str(fri_layers[-1][0]))
 ----
 
-Test your code:
+测试你的代码：
 
 [source,python]
 ----
