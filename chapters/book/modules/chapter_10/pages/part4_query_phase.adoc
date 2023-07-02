@@ -7,7 +7,7 @@ https://www.starkware.co/open-source-license/ 获取许可证的副本。除非�
 * https://starkware.co/wp-content/uploads/2021/12/STARK101-Part1.pdf[幻灯片
 (PDF)]
 
-== Load the Previous Session
+== 加载上一个会话
 
 Run the next cell to load the variables we'll use in this part. Since it
 repeats everything done in previous parts - it will take a while to run.
