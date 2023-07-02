@@ -70,31 +70,21 @@ assert test_channel.state == 'ad4fe9aaee0fbbad0130ae0fda896393b879c5078bf57d6c70
 print('Success!')
 ----
 
-== Decommit on the Trace Polynomial
+== 在跟踪多项式上取消承诺
 
-To prove that indeed the FRI layers we decommit on were generated from
-evaluation of the composition polynomial, we must also send:
+为了证明我们取消承诺的 FRI 层确实是从组合多项式的评估生成的，我们还必须发送：
 
-. The value latexmath:[$f(x)$] with its authentication path.
-. The value latexmath:[$f(gx)$] with its authentication path.
-. The value latexmath:[$f(g^2x)$] with its authentication path. The
-verifier, knowing the random coefficients of the composition polynomial,
-can compute its evaluation at latexmath:[$x$], and compare it with the
-first element sent from the first FRI layer.
+. 带有其认证路径的 latexmath:[$f(x)$] 的值。
+. 带有其认证路径的 latexmath:[$f(gx)$] 的值。
+. 带有其认证路径的 latexmath:[$f(g^2x)$] 的值。知道组合多项式的随机系数的验证器可以计算其在 latexmath:[$x$] 处的评估。并将其与从第一个 FRI 层发送的第一个元素进行比较。
 
-The function `decommit_on_query` should therefore send the above (1, 2,
-and 3) over the channel, and then call `decommit_on_fri_layers`.
+因此，函数 `decommit_on_query` 应该通过通道发送上述内容（1、2和3），然后调用 `decommit_on_fri_layers`。
 
-Importantly, even though latexmath:[$x, gx, g^2x$] are consecutive
-elements (modulo the group size latexmath:[$|G|$]) in the trace, the
-evaluations of `f_eval` in these points are actually 8 elements apart.
-The reason for this is that we "blew up" the trace to 8 times its size
-in part I, to obtain a Reed Solomon codeword.
+重要的是，尽管 latexmath:[$x, gx, g^2x$] 在跟踪中是连续的元素（模组大小为 latexmath:[$|G|$]），但这些点中 `f_eval` 的评估实际上相隔 8 个元素。原因是我们在第一部分中将跟踪“扩展”到其大小的 8 倍，以获得 Reed Solomon 码字。
 
-_Reminder: `f_eval` is the evaluation of the composition polynomial, and
-`f_merkle` is the corresponding Merkle tree._
+_提醒：`f_eval` 是组合多项式的评估，`f_merkle` 是相应的Merkle Tree。_
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -109,7 +99,7 @@ def decommit_on_query(idx, channel):
     decommit_on_fri_layers(idx, channel)    
 ----
 
-Test your code:
+测试你的代码：
 
 [source,python]
 ----
@@ -121,16 +111,13 @@ assert test_channel.state == '16a72acce8d10ffb318f8f5cd557930e38cdba236a40439c9c
 print('Success!')
 ----
 
-== Decommit on a Set of Queries
+== 在一组查询上取消承诺
 
-To finish the proof, the prover gets a set of random queries from the
-channel, i.e., indices between 0 to 8191, and decommits on each query.
+为了完成证明，证明器从通道获取一组随机查询，即从 0 到 8191 的索引，并对每个查询进行取消承诺。
 
-Use the function that you just implemented `decommit_on_query()`, and
-`Channel.receive_random_int` to generate 3 random queries and decommit
-on each.
+使用刚刚实现的函数 `decommit_on_query()` 和`Channel.receive_random_int` 来生成 3 个随机查询，并对每个查询进行取消承诺。
 
-Solution:
+解决方案：
 
 [source,python]
 ----
@@ -140,7 +127,7 @@ def decommit_fri(channel):
         decommit_on_query(channel.receive_random_int(0, 8191-16), channel)
 ----
 
-Test your code:
+测试你的代码：
 
 [source,python]
 ----
@@ -150,11 +137,9 @@ assert test_channel.state == 'eb96b3b77fe6cd48cfb388467c72440bdf035c51d0cfe8b4c0
 print('Success!')
 ----
 
-== Proving Time!
+== 证明时间！
 
-Run the following cell that ties it all together, running all previous
-code, as well as the functions you wrote in this part, and prints the
-proof.
+运行下面的单元格，将所有先前的代码以及您在此部分编写的函数绑定在一起，并打印出证明。
 
 [source,python]
 ----
