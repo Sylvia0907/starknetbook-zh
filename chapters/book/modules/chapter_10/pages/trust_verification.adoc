@@ -10,7 +10,7 @@
 
 一种新的 “`旧世界`”方法的变体是可信执行环境（TEE）。一个可信的硬件制造商（比如英特尔）生产出一个物理机器（比如SGX芯片），这个机器不能偏离指定的计算，并使用仅该物理机器知道的秘密密钥对正确状态进行签名。现在，诚信基于对硬件及其制造商的信任，以及基于这样的物理设备不可能被破解密钥的假设。
 
-"`新世界`"：验证，或包容性责任
+“`新世界`”：验证，或包容性责任
 区块链提供了一种更直接实现诚信的方式，这就是“不要信任，要验证”的座右铭。这个“新世界”不需要诚信剧场，它不依赖会计师，它的开发人员和网络维护者也不需要抵押他们的个人自由来获得公众的信任。诚信由包容责任来保证：一个具备标准计算设置（连接互联网的笔记本电脑）的节点应该能够验证系统中的所有交易的诚信。
 
 在无需许可的区块链中，验证 CI 的主要方法是通过“naive replay”：要求所有节点重新执行（replay）验证每个交易的计算。然而，包容性责任在这种朴素形式下会带来两个直接的挑战：
@@ -28,17 +28,17 @@ image::receipt.png[receipt]
 
 === 证明系统
 
-证明系统始于 1985 年，Goldwasser、Micali和 Rackoff 提出的https://en.wikipedia.org/wiki/Interactive_proof_system[交互式证明] (IP) 模型。Interactive proofs are protocols that involve two kinds of entities: a prover and a verifier, who interact over a number of rounds by sending messages. The prover and verifier have conflicting objectives: the prover wants to convince the verifier of the integrity of a certain computation, and the verifier is a suspicious gatekeeper entrusted by the public with the task of distinguishing between truisms and falsities. The prover and verifier communicate interactively, taking turns in sending messages to one another. These messages depend on the statement being proved, on prior messages, and may also use some randomness. On the prover side, randomness is used to achieve zero knowledge and on the verifier side randomness is needed to generate queries to the prover. At the end of the interactive process the verifier outputs a decision, to either accept the new state or reject it.
+证明系统始于 1985 年，Goldwasser、Micali和 Rackoff 提出的https://en.wikipedia.org/wiki/Interactive_proof_system[交互式证明] (IP) 模型。交互式证明是涉及两种实体的协议：证明器和验证者，它们通过发送消息进行多轮交互。证明器和验证者具有相互冲突的目标：证明器希望使验证者相信某个计算的完整性，而验证者则是被公众委托的怀疑的门卫，负责区分真理和虚假之间的差别。证明器和验证者交互地进行通信，轮流向彼此发送消息。这些消息取决于所证明的语句、先前的消息，并且可能使用一些随机性。在证明器方面，随机性用于实现零知识性，而在验证者方面，随机性需要用于产生对证明器的查询。在交互过程结束时，验证者输出一个决策，要么接受新状态，要么拒绝它。
 
-A good analogy is the examination process practiced in a court of law when one party submits a claim and its counterparty questions its validity. For the claim to be accepted as true, the answers provided by the claimant (prover) to the examiner's (verifier's) queries must be consistent and valid. The examination process is expected to expose any mismatch between a statement and reality, and thus expose it as false.
+一个很好的类比是法庭上的审讯过程，当一方提出主张时，对方质疑其有效性。为了接受主张为真，提出主张的人（证明器）对审查人（验证者）的问题必须提供一致且有效的回答。审讯过程旨在揭示陈述与现实之间的任何不匹配，从而将其暴露为虚假的。
 
-We say that a proof system _solves_ CI if when updating the system from state A to state B, the following properties hold:
+我们称证明系统在将系统从状态 A 更新到状态 B 时，如果满足以下属性，则该系统 _解决_ CI 问题：
 
-* *Completeness*: If the prover indeed knows how to change the state from A to B in a valid way then the prover will manage to convince the verifier to accept the change.
+* *完备性（Completeness）*: 如果证明器确实知道如何以有效的方式将状态从 A 更改为 B，那么证明器将成功说服验证者接受这种变化。
 * {blank}
- ** *Soundness*: If the prover doesn't know how to change the state from A to B, then the verifier will notice an inconsistency in the interaction and reject the suggested state transition. There remains a tiny false-positive probability, i.e., a probability of the verifier accepting an invalid proof. This probability is a system security parameter which can be set to an acceptable level like 1/(2¹²⁸), similar odds to winning the powerball five times in a row.
+ ** *正确性（Soundness）*: 如果证明者不知道如何将状态从A更改为B，则验证者将注意到交互中的不一致性，并拒绝建议的状态转换。仍然存在一种微小的误报概率，即验证者接受无效证明的概率。这个概率是系统的安全参数，可以设置为可接受的水平，例如 1/(2¹²⁸)，类似于连续五次中强力球（美国的一种彩票）的概率。
 
-This pair of properties has a crucial implication to the principle of Inclusive Accountability discussed earlier. The verifier can accept the state transition suggested by the prover without making any assumptions about the integrity of the prover. In fact, the prover can run on faulty hardware, it can be closed source and it can be executed on a computer controlled by a malicious entity. The only thing that matters¹ is that the messages sent by the prover lead the verifier to accept the statement. If that is the case, we know that computational integrity holds.
+这对属性对之前讨论的“包容性问责原则”有着至关重要的影响。验证者可以接受证明器建议的状态转换，而无需对证明器的完整性做任何假设。实际上，证明器可以在有缺陷的硬件上运行，可以是闭源的，并且可以在被恶意实体控制的计算机上执行。唯一重要的¹是证明器发送的消息导致验证者接受了该语句。如果是这样的情况，我们就知道计算完整性成立。
 
 == (extra) Probabistically Checkable Proofs.
 
