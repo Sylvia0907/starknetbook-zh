@@ -1,34 +1,34 @@
 [id="trust_verification"]
 
-= Trust vs. Verification
+= 信任 vs. 验证
 
-Computational Integrity (CI) is a fundamental property that underlies commerce. In simple terms, it means that the output of a certain computation is correct. CI is what allows us to trust an account balance presented to us, or the bill at a store. This Chapter delves into how permissionless blockchains achieve CI without requiring trust, the dramatic price they pay for this in terms of scalability and privacy, and how STARKs can save the day.
+计算完整性（CI）是商业的基本属性。简单来说，它意味着某个计算的输出是正确的。CI 使我们能够信任呈现给我们的账户余额或商店的账单。本章将深入探讨无需许可的区块链如何在不需要信任的情况下实现 CI，以及在可扩展性和隐私方面所付出的巨大代价，以及 STARK 如何拯救局面。
 
-== "`Old World`": Trust, or Delegated Accountability
+== “`旧世界`”：信任或委派责任
 
-Financial systems (banks, brokers, exchanges, etc.) need to operate with integrity to serve their societal functions. What mechanisms incentivize them to operate with integrity? The "`old world`" assumes trust as a proxy for integrity. We trust banks, pension funds, etc., to operate honestly. Let's go down the rabbit hole and examine the basis for this trust, ignoring the "`integrity theater`" -- the tall buildings and fancy suits -- set to impress us. From a purely rational and utilitarian perspective, the thing that prevents the financial system from seizing all our funds is the threat of social disgrace, jail, and fines. There's also a carrot -- reputation, which attracts future customers and generates future profits. By signing on financial statements with their names, people in the "`old world`" stake their personal freedom, existing and future finances as a collateral for integrity, and we, the public, base our trust on this arrangement. The verification of this integrity is delegated to experts like accountants, auditors, and regulators. We will call this Delegated Accountability. It's not a bad system: it's been serving modern economies faithfully for quite some time.
+金融系统（银行、经纪人、交易所等）需要以诚信的方式运营，以便发挥其社会职能。那么，是什么机制激励他们以诚信的方式运营呢？在“旧世界”中，人们把信任作为诚信的代理。我们信任银行、养老基金等，相信他们会诚实运营。让我们跳进兔子洞，忽略那些为了给我们留下深刻印象的“诚信剧场”，如高楼大厦和华丽的西装，从而来探究这种信任的基础。从纯粹的理性和功利主义角度来看，阻止金融系统占用我们所有资金的因素是社会耻辱、监狱和罚款的威胁。也有一个诱因——声誉，它能吸引未来的客户并产生未来的利润。在“旧世界”中，人们在财务报表上签上自己的名字，用他们的个人自由、现有和未来的财务作为诚信的担保，我们公众就是基于这种安排来建立信任的。这种诚信的验证被委托给了像会计师、审计师和监管者这样的专家。我们将这种机制称为委派责任。这并不是一个糟糕的系统：它已经忠实地为现代经济服务了相当长的一段时间。
 
-A new variant of the "`old world`" approach is the Trusted Execution Environment (TEE). A trusted hardware manufacturer (like Intel) produces a physical machine (like the SGX chip) that cannot deviate from the specified computation and signs correct states using a secret key known only to that physical machine. Integrity is now based on trust in the hardware and its manufacturer and on the assumption that it is impossible to extract secret keys from such physical devices.
+一种新的 “`旧世界`”方法的变体是可信执行环境（TEE）。一个可信的硬件制造商（比如英特尔）生产出一个物理机器（比如SGX芯片），这个机器不能偏离指定的计算，并使用仅该物理机器知道的秘密密钥对正确状态进行签名。现在，诚信基于对硬件及其制造商的信任，以及基于这样的物理设备不可能被破解密钥的假设。
 
-"`New World`": Verify, or Inclusive Accountability
-Blockchains offer a more direct way to reach integrity, captured by the motto "`Don't Trust, Verify`". This "`new world`" does not require an integrity theater, it doesn't rely on accountants, nor do its developers and network maintainers stake their personal freedom to gain public trust. Integrity is guaranteed by Inclusive Accountability: a node with a standard computational setup (a web-connected laptop) should be able to verify the integrity of all transactions in the system.
+“`新世界`”：验证，或包容性责任
+区块链提供了一种更直接实现诚信的方式，这就是“不要信任，要验证”的座右铭。这个“新世界”不需要诚信剧场，它不依赖会计师，它的开发人员和网络维护者也不需要抵押他们的个人自由来获得公众的信任。诚信由包容责任来保证：一个具备标准计算设置（连接互联网的笔记本电脑）的节点应该能够验证系统中的所有交易的诚信。
 
-The prevalent method to verify CI in permissionless blockchains is via naive replay: all nodes are asked to re-execute (replay) the computations that verify each and every transaction. Inclusive Accountability, in this naive form, leads to two immediate challenges:
+在无需许可的区块链中，验证 CI 的主要方法是通过“naive replay”：要求所有节点重新执行（replay）验证每个交易的计算。然而，包容性责任在这种朴素形式下会带来两个直接的挑战：
 
-* *Privacy*: If everyone gets to inspect all transactions then privacy might be compromised. The absence of privacy deters businesses, as it means sensitive information may not remain proprietary. It also deters individuals, as it erodes https://en.wikipedia.org/wiki/The_Right_to_Privacy_(article)[human dignity].
-* *Scalability*: Demanding that the system be accountable to a standard laptop means it cannot scale up by simply moving to bigger computers and larger bandwidth. This leads to a severe bound on the throughput of the system.
+* *隐私*：如果每个人都能检查所有的交易，那么可能会危及隐私。缺乏隐私会阻碍企业的发展，因为这意味着敏感信息可能无法保持专有。它也会阻碍个人，因为它侵蚀了 https://en.wikipedia.org/wiki/The_Right_to_Privacy_(article)[人类尊严].
+* *可扩展性*：而要求系统对标准笔记本电脑负责，意味着它无法通过简单地转移到更大的计算机和更大的带宽来扩展。这导致系统吞吐量的严重限制，从而对可扩展性构成了挑战。
 
-Proofs systems (discussed next) are an excellent solution to both challenges. Zero Knowledge (ZK) proof systems are by now an established tool to address privacy in blockchains and explained excellently in several posts of Zcash (see https://z.cash/blog/shielded-ecosystem/[this], https://z.cash/technology/[this] and https://z.cash/technology/zksnarks/[this]).
+证明系统（接下来将进行讨论）是解决这两个挑战的绝佳解决方案。零知识证明 (ZK) 证明系统是现在已经成熟的用于解决区块链隐私问题的工具，在 Zcash 的几篇文章中得到了很好的解释 (参看 https://z.cash/blog/shielded-ecosystem/[这篇], https://z.cash/technology/[这篇] 和 https://z.cash/technology/zksnarks/[这篇])。
 
-Let's review an example for a CI statement (the claim that the output of a certain computation is correct): the total sum we should pay at the supermarket was computed correctly. The conventional proof for this particular statement is the receipt. Typically, the items in the receipt are listed with their prices, and the total sum is indicated at the bottom, like so:
+让我们来审视一个计算完整性（CI）语句的例子（即某个计算的输出是正确的声明）：我们在超市应支付的总金额被正确计算。对于这个特定语句，常见的证明是收据。通常，收据上列出了商品及其价格，并在底部显示总金额，如下所示：
 
 image::receipt.png[receipt]
 
-For simplicity -- we only consider this to be a statement that the summation is correct. To see whether this CI statement holds, one can go over the list -- not skipping any item -- to compute the total sum, and check it against the number at the bottom of the receipt. This is a very naive example, but we'll use it further down this article to demonstrate the idea of _succinct testability_.
+为了简单起见，我们只考虑这个语句是总和正确的声明。要查看这个CI语句是否成立，可以逐项检查列表（不跳过任何项目）以计算总和，并将其与收据底部的数字进行比较。这是一个非常朴素的例子，但我们将在本文后面使用它来演示 _简洁可测试性_的想法。
 
-=== Proof Systems
+=== 证明系统
 
-Proof Systems started with the introduction of the https://en.wikipedia.org/wiki/Interactive_proof_system[Interactive Proof] (IP) model by Goldwasser, Micali, and Rackoff in 1985. Interactive proofs are protocols that involve two kinds of entities: a prover and a verifier, who interact over a number of rounds by sending messages. The prover and verifier have conflicting objectives: the prover wants to convince the verifier of the integrity of a certain computation, and the verifier is a suspicious gatekeeper entrusted by the public with the task of distinguishing between truisms and falsities. The prover and verifier communicate interactively, taking turns in sending messages to one another. These messages depend on the statement being proved, on prior messages, and may also use some randomness. On the prover side, randomness is used to achieve zero knowledge and on the verifier side randomness is needed to generate queries to the prover. At the end of the interactive process the verifier outputs a decision, to either accept the new state or reject it.
+证明系统始于 1985 年，Goldwasser、Micali和 Rackoff 提出的https://en.wikipedia.org/wiki/Interactive_proof_system[交互式证明] (IP) 模型。Interactive proofs are protocols that involve two kinds of entities: a prover and a verifier, who interact over a number of rounds by sending messages. The prover and verifier have conflicting objectives: the prover wants to convince the verifier of the integrity of a certain computation, and the verifier is a suspicious gatekeeper entrusted by the public with the task of distinguishing between truisms and falsities. The prover and verifier communicate interactively, taking turns in sending messages to one another. These messages depend on the statement being proved, on prior messages, and may also use some randomness. On the prover side, randomness is used to achieve zero knowledge and on the verifier side randomness is needed to generate queries to the prover. At the end of the interactive process the verifier outputs a decision, to either accept the new state or reject it.
 
 A good analogy is the examination process practiced in a court of law when one party submits a claim and its counterparty questions its validity. For the claim to be accepted as true, the answers provided by the claimant (prover) to the examiner's (verifier's) queries must be consistent and valid. The examination process is expected to expose any mismatch between a statement and reality, and thus expose it as false.
 
